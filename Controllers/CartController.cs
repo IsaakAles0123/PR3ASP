@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using PR1_ASP.Models;
 
 namespace PR1_ASP.Controllers;
@@ -148,5 +149,86 @@ public class CartController : Controller
         await _db.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
+    }
+
+    /// <summary>Оформление заказа: запись в Orders/OrderItems, списание остатков, очистка корзины.</summary>
+    [HttpPost]
+    public async Task<IActionResult> Purchase()
+    {
+        if (!TryGetCartIdFromCookie(out var cartId))
+            return RedirectToAction(nameof(Index));
+
+        var lines = await _db.CartItems
+            .Include(ci => ci.Product)
+            .Where(ci => ci.CartId == cartId)
+            .ToListAsync();
+
+        if (lines.Count == 0)
+            return RedirectToAction(nameof(Index));
+
+        foreach (var line in lines)
+        {
+            if (line.Product is null || line.ProductId is null)
+                return BadRequest();
+
+            if (line.Quantity > line.Product.Stock)
+            {
+                TempData["CartError"] =
+                    $"Недостаточно товара «{line.Product.ProductName}» на складе (запрошено {line.Quantity}, доступно {line.Product.Stock}). Сохрани количество в корзине или уменьши заказ.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        decimal total = lines.Sum(l => l.Product!.Price * l.Quantity);
+        var order = new Order
+        {
+            UserId = null,
+            OrderDate = DateTime.UtcNow.Date,
+            TotalAmount = total,
+            Status = "Оплачен"
+        };
+
+        await using IDbContextTransaction tx = await _db.Database.BeginTransactionAsync();
+        try
+        {
+            _db.Orders.Add(order);
+            await _db.SaveChangesAsync();
+
+            foreach (var line in lines)
+            {
+                var product = line.Product!;
+                _db.OrderItems.Add(new OrderItem
+                {
+                    OrderId = order.OrderId,
+                    ProductId = product.ProductId,
+                    Quantity = line.Quantity,
+                    Price = product.Price
+                });
+                product.Stock -= line.Quantity;
+            }
+
+            _db.CartItems.RemoveRange(lines);
+            await _db.SaveChangesAsync();
+            await tx.CommitAsync();
+        }
+        catch
+        {
+            await tx.RollbackAsync();
+            throw;
+        }
+
+        Response.Cookies.Delete(CartIdCookieKey);
+        TempData["PurchaseTotal"] = total.ToString("0.##");
+        return RedirectToAction(nameof(PurchaseThanks), new { id = order.OrderId });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> PurchaseThanks(int id)
+    {
+        var ok = await _db.Orders.AsNoTracking().AnyAsync(o => o.OrderId == id);
+        if (!ok)
+            return NotFound();
+
+        return View(id);
     }
 }

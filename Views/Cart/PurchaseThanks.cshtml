@@ -1,0 +1,25 @@
+@model int
+@{
+    ViewData["Title"] = "Заказ оформлен";
+    var total = TempData["PurchaseTotal"] as string;
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card app-card p-4">
+            <h1 class="h3 mb-3">Спасибо за покупку</h1>
+            <p class="mb-2">Заказ сохранён в базе данных.</p>
+            <p class="app-muted mb-4">
+                Номер заказа: <span class="text-white fw-bold">#@Model</span>
+                @if (!string.IsNullOrEmpty(total))
+                {
+                    <span> · сумма: <span class="text-white fw-bold">@total ₽</span></span>
+                }
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-success" asp-controller="Catalog" asp-action="Index">В каталог</a>
+                <a class="btn btn-outline-success" asp-controller="Cart" asp-action="Index">Корзина</a>
+            </div>
+        </div>
+    </div>
+</div>

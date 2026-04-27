@@ -25,6 +25,11 @@
                 <a class="btn btn-outline-success" asp-controller="Catalog" asp-action="Index">В каталог</a>
             </div>
 
+            @if (TempData["CartError"] is string cartErr)
+            {
+                <div class="alert alert-warning border border-warning mb-3" role="alert">@cartErr</div>
+            }
+
             @if (!Model.Lines.Any())
             {
                 <div class="app-muted">Корзина пустая. Добавь товары из каталога.</div>
@@ -89,9 +94,13 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="5" class="text-end fw-bold">Итого</td>
-                                <td class="text-end fw-bold"><span class="js-grand-total">@Model.GrandTotal.ToString("0.##")</span> ₽</td>
-                                <td></td>
+                                <td colspan="5" class="text-end fw-bold align-middle">Итого</td>
+                                <td class="text-end fw-bold align-middle"><span class="js-grand-total">@Model.GrandTotal.ToString("0.##")</span> ₽</td>
+                                <td class="text-end align-middle">
+                                    <form asp-controller="Cart" asp-action="Purchase" method="post" class="d-inline-block" onsubmit="return confirm('Оформить заказ на сумму, сохранённую в корзине? Если менял количество в полях, сначала нажми «Сохранить» у нужных строк.');">
+                                        <button type="submit" class="btn btn-success btn-lg px-4">Купить</button>
+                                    </form>
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
