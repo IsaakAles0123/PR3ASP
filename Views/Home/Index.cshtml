@@ -1,0 +1,68 @@
+@{
+    ViewData["Title"] = "Магазин кроссовок";
+}
+
+<div class="row">
+    <div class="col-lg-10">
+        <div class="card app-card p-4">
+            <h1 class="mb-2">Кроссовки на каждый день</h1>
+            <p class="app-muted mb-4">
+                Учебный пример ASP.NET Core MVC с Microsoft SQL Server и Entity Framework Core: каталог товаров
+                берётся из базы, корзина сохраняется в таблицах Carts/CartItems. Отдельно есть страница профиля с формой.
+            </p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-primary" asp-controller="Catalog" asp-action="Index">Перейти в каталог</a>
+                <a class="btn btn-outline-success" asp-controller="Cart" asp-action="Index">Открыть корзину</a>
+                <a class="btn btn-outline-success" asp-controller="Profile" asp-action="Index">Заполнить профиль</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-10">
+        <div class="d-flex align-items-end justify-content-between gap-3 mb-3">
+            <div>
+                <h2 class="h4 mb-1">Хитовые модели</h2>
+                <div class="app-muted">Ниже — пример оформления карточек. Реальные товары смотри в каталоге.</div>
+            </div>
+            <a class="btn btn-outline-success" asp-controller="Catalog" asp-action="Index">Все кроссовки</a>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="product-card">
+                    <div class="product-emoji">👟</div>
+                    <div class="product-title">Sprint Runner</div>
+                    <div class="product-meta app-muted">Размеры: 40-45</div>
+                    <div class="product-price">6 990 ₽</div>
+                    <div class="mt-3">
+                        <a class="btn btn-sm btn-success w-100" asp-controller="Catalog" asp-action="Index">Смотреть</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="product-card">
+                    <div class="product-emoji">👟</div>
+                    <div class="product-title">Cloud Walk</div>
+                    <div class="product-meta app-muted">Размеры: 38-44</div>
+                    <div class="product-price">7 490 ₽</div>
+                    <div class="mt-3">
+                        <a class="btn btn-sm btn-success w-100" asp-controller="Catalog" asp-action="Index">Смотреть</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="product-card">
+                    <div class="product-emoji">👟</div>
+                    <div class="product-title">Urban Flex</div>
+                    <div class="product-meta app-muted">Размеры: 41-46</div>
+                    <div class="product-price">8 190 ₽</div>
+                    <div class="mt-3">
+                        <a class="btn btn-sm btn-success w-100" asp-controller="Catalog" asp-action="Index">Смотреть</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

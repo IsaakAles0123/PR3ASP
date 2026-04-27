@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PR1_ASP</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        @{
+            var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+            var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+            bool IsActive(string controller, string action) =>
+                string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase);
+        }
+
+        <nav class="app-nav" aria-label="Основная навигация">
+            <div class="app-nav-inner">
+                <a class="app-brand" asp-area="" asp-controller="Home" asp-action="Index">PR1_ASP</a>
+
+                <ul class="app-nav-links">
+                    <li>
+                        <a class="app-nav-link @(IsActive("Home", "Index") ? "is-active" : null)"
+                           asp-area=""
+                           asp-controller="Home"
+                           asp-action="Index"
+                           aria-current="@(IsActive("Home", "Index") ? "page" : null)">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a class="app-nav-link @(IsActive("Profile", "Index") ? "is-active" : null)"
+                           asp-area=""
+                           asp-controller="Profile"
+                           asp-action="Index"
+                           aria-current="@(IsActive("Profile", "Index") ? "page" : null)">
+                            Профиль
+                        </a>
+                    </li>
+                    <li>
+                        <a class="app-nav-link @(IsActive("Profile", "Result") ? "is-active" : null)"
+                           asp-area=""
+                           asp-controller="Profile"
+                           asp-action="Result"
+                           aria-current="@(IsActive("Profile", "Result") ? "page" : null)">
+                            Мои данные
+                        </a>
+                    </li>
+                    <li>
+                        <a class="app-nav-link @(IsActive("Catalog", "Index") ? "is-active" : null)"
+                           asp-area=""
+                           asp-controller="Catalog"
+                           asp-action="Index"
+                           aria-current="@(IsActive("Catalog", "Index") ? "page" : null)">
+                            Каталог
+                        </a>
+                    </li>
+                    <li>
+                        <a class="app-nav-link @(IsActive("Cart", "Index") ? "is-active" : null)"
+                           asp-area=""
+                           asp-controller="Cart"
+                           asp-action="Index"
+                           aria-current="@(IsActive("Cart", "Index") ? "page" : null)">
+                            Корзина
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="app-container">
+        <main role="main" class="app-main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="app-footer">
+        <div class="app-footer-inner">
+            &copy; 2026 - PR1_ASP -
+            <a asp-area="" asp-controller="Catalog" asp-action="Index">Каталог</a> ·
+            <a asp-area="" asp-controller="Cart" asp-action="Index">Корзина</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,127 @@
+@model PR1_ASP.Models.CartPageViewModel
+
+@{
+    ViewData["Title"] = "Корзина";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card app-card p-4">
+            <div class="d-flex flex-wrap gap-2 align-items-end justify-content-between mb-3">
+                <div>
+                    <h1 class="h3 mb-1">Корзина</h1>
+                    <div class="app-muted">
+                        Количество и суммы сохраняются в базе данных (таблицы Carts / CartItems).
+                        Сумма пересчитывается сразу при вводе количества, а в БД записывается после нажатия «Сохранить».
+                    </div>
+                </div>
+                <a class="btn btn-outline-success" asp-controller="Catalog" asp-action="Index">В каталог</a>
+            </div>
+
+            @if (!Model.Lines.Any())
+            {
+                <div class="app-muted">Корзина пустая. Добавь товары из каталога.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Товар</th>
+                                <th>Категория</th>
+                                <th>Описание</th>
+                                <th class="text-end">Цена</th>
+                                <th style="width: 160px;">Кол-во</th>
+                                <th class="text-end">Сумма</th>
+                                <th style="width: 120px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var line in Model.Lines)
+                            {
+                                <tr class="js-cart-row"
+                                    data-price="@line.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                    data-max="@line.MaxStock">
+                                    <td class="fw-semibold">@line.ProductName</td>
+                                    <td>@line.CategoryName</td>
+                                    <td class="app-muted">@line.Description</td>
+                                    <td class="text-end">@line.Price.ToString("0.##") ₽</td>
+                                    <td>
+                                        <form asp-controller="Cart" asp-action="Update" method="post" class="d-flex gap-2 js-cart-update">
+                                            <input type="hidden" name="cartItemId" value="@line.CartItemId" />
+                                            <input class="form-control js-cart-qty"
+                                                   type="number"
+                                                   name="quantity"
+                                                   min="1"
+                                                   max="@line.MaxStock"
+                                                   value="@line.Quantity"
+                                                   inputmode="numeric" />
+                                            <button type="submit" class="btn btn-success">Сохранить</button>
+                                        </form>
+                                    </td>
+                                    <td class="text-end fw-semibold">
+                                        <span class="js-line-total">@line.LineTotal.ToString("0.##")</span> ₽
+                                    </td>
+                                    <td class="text-end">
+                                        <form asp-controller="Cart" asp-action="Remove" method="post" onsubmit="return confirm('Удалить товар из корзины?');">
+                                            <input type="hidden" name="cartItemId" value="@line.CartItemId" />
+                                            <button type="submit" class="btn btn-outline-danger">Удалить</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5" class="text-end fw-bold">Итого</td>
+                                <td class="text-end fw-bold"><span class="js-grand-total">@Model.GrandTotal.ToString("0.##")</span> ₽</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const money = (n) => (Math.round(n * 100) / 100).toFixed(2);
+
+            function clamp(n, min, max) {
+                n = Number(n);
+                if (!Number.isFinite(n)) return min;
+                return Math.min(Math.max(n, min), max);
+            }
+
+            function recalcRow(row) {
+                const price = Number(row.dataset.price);
+                const max = Number(row.dataset.max);
+                const qtyInput = row.querySelector('.js-cart-qty');
+                const qty = clamp(qtyInput.value, 1, max);
+                qtyInput.value = String(qty);
+
+                const lineTotal = price * qty;
+                row.querySelector('.js-line-total').textContent = money(lineTotal);
+                return lineTotal;
+            }
+
+            function recalcAll() {
+                let sum = 0;
+                document.querySelectorAll('.js-cart-row').forEach(row => {
+                    sum += recalcRow(row);
+                });
+                const grand = document.querySelector('.js-grand-total');
+                if (grand) grand.textContent = money(sum);
+            }
+
+            document.querySelectorAll('.js-cart-qty').forEach(input => {
+                input.addEventListener('input', recalcAll);
+                input.addEventListener('change', recalcAll);
+            });
+        })();
+    </script>
+}

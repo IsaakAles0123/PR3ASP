@@ -1,0 +1,192 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* Общий вид */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(37, 99, 235, 0.25), transparent 60%),
+              radial-gradient(900px 500px at 90% 0%, rgba(99, 102, 241, 0.25), transparent 55%),
+              #0b1220;
+  color: #e5e7eb;
+}
+
+/* Фокус-стили для формы (поверх bootstrap) */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem rgba(255, 255, 255, 0.9), 0 0 0 0.25rem rgba(37, 99, 235, 0.8);
+  border-color: rgba(37, 99, 235, 0.9);
+}
+
+/* Кастомное меню */
+.app-nav {
+  background: linear-gradient(90deg, #0f172a, #1d4ed8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.app-nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-brand {
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.app-brand:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.app-nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.app-nav-link {
+  display: inline-block;
+  color: rgba(229, 231, 235, 0.95);
+  text-decoration: none;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 9999px;
+  transition: background-color 160ms ease, color 160ms ease, transform 120ms ease;
+  outline: none;
+}
+
+.app-nav-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.app-nav-link.is-active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Контейнер страницы */
+.app-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 0 16px;
+}
+
+.app-main {
+  min-height: 60vh;
+}
+
+/* Footer */
+.app-footer {
+  margin-top: 36px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.app-footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+  color: rgba(229, 231, 235, 0.85);
+}
+
+.app-footer-inner a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.app-footer-inner a:hover {
+  text-decoration: underline;
+}
+
+/* Общие карточки */
+.card.app-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: #e5e7eb;
+}
+
+.app-muted {
+  color: rgba(229, 231, 235, 0.78);
+}
+
+/* Подсветка полей ввода под тёмный фон */
+.form-control {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e5e7eb;
+}
+
+.form-control::placeholder {
+  color: rgba(229, 231, 235, 0.55);
+}
+
+/* Карточки товаров (витрина/каталог) */
+.product-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 18px;
+  padding: 18px;
+  color: #e5e7eb;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.18);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.05));
+}
+
+.product-emoji {
+  font-size: 40px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.product-title {
+  font-weight: 800;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.product-price {
+  font-weight: 900;
+  font-size: 1.15rem;
+  margin-top: 10px;
+  color: #ffffff;
+}
