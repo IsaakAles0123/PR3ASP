@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Корзина";
+    var totalQty = Model.Lines.Sum(l => l.Quantity);
 }
 
 <div class="row">
@@ -10,6 +11,12 @@
             <div class="d-flex flex-wrap gap-2 align-items-end justify-content-between mb-3">
                 <div>
                     <h1 class="h3 mb-1">Корзина</h1>
+                    @if (Model.Lines.Any())
+                    {
+                        <div class="mb-2">
+                            <span class="badge rounded-pill bg-success px-3 py-2">Всего пар (шт.): <strong class="js-cart-total-qty">@totalQty</strong></span>
+                        </div>
+                    }
                     <div class="app-muted">
                         Количество и суммы сохраняются в базе данных (таблицы Carts / CartItems).
                         Сумма пересчитывается сразу при вводе количества, а в БД записывается после нажатия «Сохранить».
@@ -32,7 +39,7 @@
                                 <th>Категория</th>
                                 <th>Описание</th>
                                 <th class="text-end">Цена</th>
-                                <th style="width: 160px;">Кол-во</th>
+                                <th style="min-width: 220px;">Количество</th>
                                 <th class="text-end">Сумма</th>
                                 <th style="width: 120px;"></th>
                             </tr>
@@ -48,15 +55,23 @@
                                     <td class="app-muted">@line.Description</td>
                                     <td class="text-end">@line.Price.ToString("0.##") ₽</td>
                                     <td>
-                                        <form asp-controller="Cart" asp-action="Update" method="post" class="d-flex gap-2 js-cart-update">
+                                        <div class="small mb-2">
+                                            <span class="app-muted">В корзине: </span><span class="text-white fw-semibold js-cart-qty-label">@line.Quantity</span><span class="text-white fw-semibold"> шт.</span>
+                                            <span class="app-muted"> · на складе: </span><span class="text-white fw-semibold">@line.MaxStock</span><span class="app-muted"> шт. макс.</span>
+                                        </div>
+                                        <form asp-controller="Cart" asp-action="Update" method="post" class="d-flex flex-wrap gap-2 align-items-center js-cart-update">
                                             <input type="hidden" name="cartItemId" value="@line.CartItemId" />
-                                            <input class="form-control js-cart-qty"
+                                            <label class="visually-hidden" for="qty-@line.CartItemId">Количество</label>
+                                            <input id="qty-@line.CartItemId"
+                                                   class="form-control js-cart-qty cart-qty-input text-center fw-semibold"
                                                    type="number"
                                                    name="quantity"
                                                    min="1"
                                                    max="@line.MaxStock"
                                                    value="@line.Quantity"
-                                                   inputmode="numeric" />
+                                                   inputmode="numeric"
+                                                   aria-describedby="hint-@line.CartItemId" />
+                                            <span id="hint-@line.CartItemId" class="visually-hidden">От 1 до @line.MaxStock штук</span>
                                             <button type="submit" class="btn btn-success">Сохранить</button>
                                         </form>
                                     </td>
@@ -106,16 +121,23 @@
 
                 const lineTotal = price * qty;
                 row.querySelector('.js-line-total').textContent = money(lineTotal);
+                const lbl = row.querySelector('.js-cart-qty-label');
+                if (lbl) lbl.textContent = String(qty);
                 return lineTotal;
             }
 
             function recalcAll() {
                 let sum = 0;
+                let qtySum = 0;
                 document.querySelectorAll('.js-cart-row').forEach(row => {
                     sum += recalcRow(row);
+                    const q = row.querySelector('.js-cart-qty');
+                    if (q) qtySum += clamp(q.value, 1, Number(row.dataset.max));
                 });
                 const grand = document.querySelector('.js-grand-total');
                 if (grand) grand.textContent = money(sum);
+                const badge = document.querySelector('.js-cart-total-qty');
+                if (badge) badge.textContent = String(qtySum);
             }
 
             document.querySelectorAll('.js-cart-qty').forEach(input => {

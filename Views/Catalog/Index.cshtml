@@ -29,7 +29,11 @@
                                 <div class="product-emoji">👟</div>
                                 <div class="product-title">@p.ProductName</div>
                                 <div class="app-muted">Категория: @p.CategoryName</div>
-                                <div class="app-muted mt-1">Наличие: @p.Stock</div>
+                                <div class="mt-2">
+                                    <span class="badge rounded-pill bg-dark border border-secondary px-3 py-2">
+                                        На складе: <strong class="text-success">@p.Stock</strong> шт.
+                                    </span>
+                                </div>
                                 <div class="mt-3 app-muted">@p.Description</div>
                                 <div class="product-price mt-auto pt-3">@p.Price.ToString("0.##") ₽</div>
 

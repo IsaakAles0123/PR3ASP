@@ -190,3 +190,10 @@ body {
   margin-top: 10px;
   color: #ffffff;
 }
+
+/* Поле количества в корзине — цифры крупнее и ровнее */
+.cart-qty-input {
+  min-width: 4.25rem;
+  max-width: 5.5rem;
+  font-size: 1.05rem;
+}
