@@ -20,6 +20,10 @@ out/
 Thumbs.db
 Desktop.ini
 
+## Local debug artifacts
+trace.json
+push.log
+
 ## NuGet
 *.nupkg
 **/packages/*
