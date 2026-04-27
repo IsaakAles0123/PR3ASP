@@ -22,20 +22,8 @@ public class CatalogController : Controller
             .AsNoTracking()
             .Include(p => p.Category)
             .OrderBy(p => p.ProductName)
-            .Select(p => new ProductCatalogViewModel
-            {
-                ProductId = p.ProductId,
-                ProductName = p.ProductName,
-                Price = p.Price,
-                Stock = p.Stock,
-                CategoryName = p.Category != null ? p.Category.CategoryName : "-",
-                Description = ProductDescriptionText.Short(
-                    p.ProductName,
-                    p.Category != null ? p.Category.CategoryName : "-",
-                    p.Stock)
-            })
             .ToListAsync();
 
-        return View(items);
+        return View(items.Select(p => p.ToCatalogViewModel()).ToList());
     }
 }

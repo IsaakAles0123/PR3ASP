@@ -1,3 +1,4 @@
+@model PR1_ASP.Models.HomeIndexViewModel
 @{
     ViewData["Title"] = "Магазин кроссовок";
 }
@@ -24,45 +25,18 @@
         <div class="d-flex align-items-end justify-content-between gap-3 mb-3">
             <div>
                 <h2 class="h4 mb-1">Хитовые модели</h2>
-                <div class="app-muted">Ниже — пример оформления карточек. Реальные товары смотри в каталоге.</div>
+                <div class="app-muted">Три первые позиции из каталога (те же данные из SQL Server). Полный список — в каталоге.</div>
             </div>
             <a class="btn btn-outline-success" asp-controller="Catalog" asp-action="Index">Все кроссовки</a>
         </div>
 
-        <div class="row g-3">
-            <div class="col-md-4">
-                <div class="product-card">
-                    <div class="product-emoji">👟</div>
-                    <div class="product-title">Sprint Runner</div>
-                    <div class="product-meta app-muted">Размеры: 40-45</div>
-                    <div class="product-price">6 990 ₽</div>
-                    <div class="mt-3">
-                        <a class="btn btn-sm btn-success w-100" asp-controller="Catalog" asp-action="Index">Смотреть</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="product-card">
-                    <div class="product-emoji">👟</div>
-                    <div class="product-title">Cloud Walk</div>
-                    <div class="product-meta app-muted">Размеры: 38-44</div>
-                    <div class="product-price">7 490 ₽</div>
-                    <div class="mt-3">
-                        <a class="btn btn-sm btn-success w-100" asp-controller="Catalog" asp-action="Index">Смотреть</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="product-card">
-                    <div class="product-emoji">👟</div>
-                    <div class="product-title">Urban Flex</div>
-                    <div class="product-meta app-muted">Размеры: 41-46</div>
-                    <div class="product-price">8 190 ₽</div>
-                    <div class="mt-3">
-                        <a class="btn btn-sm btn-success w-100" asp-controller="Catalog" asp-action="Index">Смотреть</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @if (!Model.FeaturedProducts.Any())
+        {
+            <div class="app-muted">В базе нет товаров — сначала заполни таблицу Products.</div>
+        }
+        else
+        {
+            <partial name="_ProductCatalogCardGrid" model="Model.FeaturedProducts" />
+        }
     </div>
 </div>

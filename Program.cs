@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using PR1_ASP.Data;
+using PR1_ASP.Models;
 
 namespace PR1_ASP
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +14,16 @@ namespace PR1_ASP
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-            builder.Services.AddDbContext<PR1_ASP.Models.SneakerShopContext>(options =>
+            builder.Services.AddDbContext<SneakerShopContext>(options =>
                 options.UseSqlServer(connectionString));
 
             var app = builder.Build();
+
+            await using (var scope = app.Services.CreateAsyncScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<SneakerShopContext>();
+                await SneakerShopPricesBootstrap.ApplyDemoPriceFixesAsync(db).ConfigureAwait(false);
+            }
 
             if (!app.Environment.IsDevelopment())
             {
@@ -30,9 +38,7 @@ namespace PR1_ASP
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
-            app.Run();
-
-
+            await app.RunAsync().ConfigureAwait(false);
         }
     }
 }

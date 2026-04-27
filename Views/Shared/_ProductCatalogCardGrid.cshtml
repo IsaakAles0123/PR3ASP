@@ -1,0 +1,30 @@
+@model IEnumerable<PR1_ASP.Models.ProductCatalogViewModel>
+
+@if (Model.Any())
+{
+    <div class="row g-3">
+        @foreach (var p in Model)
+        {
+            <div class="col-md-4">
+                <div class="product-card h-100 d-flex flex-column">
+                    <div class="product-emoji">👟</div>
+                    <div class="product-title">@p.ProductName</div>
+                    <div class="app-muted">Категория: @p.CategoryName</div>
+                    <div class="mt-2">
+                        <span class="badge rounded-pill bg-dark border border-secondary px-3 py-2">
+                            На складе: <strong class="text-success">@p.Stock</strong> шт.
+                        </span>
+                    </div>
+                    <div class="mt-3 app-muted">@p.Description</div>
+                    <div class="product-price mt-auto pt-3">@p.Price.ToString("0.##") ₽</div>
+
+                    <form class="mt-3" asp-controller="Cart" asp-action="Add" method="post">
+                        <input type="hidden" name="productId" value="@p.ProductId" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="btn btn-success w-100">Добавить в корзину</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+}
